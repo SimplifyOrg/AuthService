@@ -1,6 +1,9 @@
 package com.example.userservice.services;
 
 import com.example.userservice.DTOs.UserDTO;
+import com.example.userservice.exceptions.PasswordMismatch;
+import com.example.userservice.exceptions.SessionNotFound;
+import com.example.userservice.exceptions.UserNotFound;
 import com.example.userservice.models.Role;
 import com.example.userservice.models.Session;
 import com.example.userservice.models.SessionStatus;
@@ -35,16 +38,16 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<UserDTO> login(String email, String password) {
+    public ResponseEntity<UserDTO> login(String email, String password) throws UserNotFound, PasswordMismatch {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if(userOptional.isEmpty()){
-            return null;
+            throw new UserNotFound(email);
         }
 
         User user = userOptional.get();
 
         if(!bCryptPasswordEncoder.matches(password, user.getPassword())){
-            throw new RuntimeException("Wrong password");
+            throw new PasswordMismatch();
         }
 
         MacAlgorithm algo = Jwts.SIG.HS256;
@@ -76,10 +79,10 @@ public class AuthService {
         return new ResponseEntity<>(userDTO, header, HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> logout(String token, UUID userId) {
+    public ResponseEntity<Void> logout(String token, UUID userId) throws SessionNotFound {
         Optional<Session> sessionOptional = sessionRepository.findByTokenAndUser_Id(token, userId);
         if(sessionOptional.isEmpty()) {
-            return null;
+            throw new SessionNotFound();
         }
 
         Session session = sessionOptional.get();

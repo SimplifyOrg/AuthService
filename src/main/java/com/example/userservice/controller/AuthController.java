@@ -1,6 +1,9 @@
 package com.example.userservice.controller;
 
 import com.example.userservice.DTOs.*;
+import com.example.userservice.exceptions.PasswordMismatch;
+import com.example.userservice.exceptions.SessionNotFound;
+import com.example.userservice.exceptions.UserNotFound;
 import com.example.userservice.models.SessionStatus;
 import com.example.userservice.services.AuthService;
 import org.apache.coyote.Response;
@@ -22,12 +25,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) throws UserNotFound, PasswordMismatch {
         return authService.login(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestBody LogoutRequestDTO logoutRequestDTO) {
+    public ResponseEntity<Void> logout(@RequestBody LogoutRequestDTO logoutRequestDTO) throws SessionNotFound {
         return authService.logout(logoutRequestDTO.getToken(), logoutRequestDTO.getUserId());
     }
 
