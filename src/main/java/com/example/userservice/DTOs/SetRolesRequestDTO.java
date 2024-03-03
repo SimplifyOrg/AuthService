@@ -9,5 +9,5 @@ import java.util.UUID;
 @Getter
 @Setter
 public class SetRolesRequestDTO {
-    private List<UUID> roleIds;
+    private List<Long> roleIds;
 }

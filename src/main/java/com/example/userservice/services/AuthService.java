@@ -79,7 +79,7 @@ public class AuthService {
         return new ResponseEntity<>(userDTO, header, HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> logout(String token, UUID userId) throws SessionNotFound {
+    public ResponseEntity<Void> logout(String token, Long userId) throws SessionNotFound {
         Optional<Session> sessionOptional = sessionRepository.findByTokenAndUser_Id(token, userId);
         if(sessionOptional.isEmpty()) {
             throw new SessionNotFound();
@@ -100,7 +100,7 @@ public class AuthService {
         return UserDTO.from(user);
     }
 
-    public SessionStatus validate(String token, UUID userId) {
+    public SessionStatus validate(String token, Long userId) {
         Optional<Session> sessionOptional = sessionRepository.findByTokenAndUser_Id(token, userId);
         if(sessionOptional.isEmpty()){
             return null;

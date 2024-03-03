@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class RoleDTO {
-    private UUID roleId;
+    private Long roleId;
     private String name;
 
     public static RoleDTO from(Role role){

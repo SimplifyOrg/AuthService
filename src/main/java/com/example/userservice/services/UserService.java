@@ -22,12 +22,12 @@ public class UserService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
-    public UserDTO getUser(UUID id) {
+    public UserDTO getUser(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.map(UserDTO::from).orElse(null);
     }
 
-    public UserDTO setUserRoles(UUID userID, List<UUID> roleIds) {
+    public UserDTO setUserRoles(Long userID, List<Long> roleIds) {
         Optional<User> userOptional = userRepository.findById(userID);
         List<Role> roles = roleRepository.findAllById(roleIds);
 

@@ -65,24 +65,24 @@ CREATE TABLE client
 
 CREATE TABLE `role`
 (
-    id   BINARY(16) NOT NULL,
+    id   BIGINT AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NULL,
     CONSTRAINT pk_role PRIMARY KEY (id)
 );
 
 CREATE TABLE session
 (
-    id             BINARY(16) NOT NULL,
+    id             BIGINT AUTO_INCREMENT NOT NULL,
     token          VARCHAR(255) NULL,
     expiry         datetime NULL,
-    user_id        BINARY(16) NULL,
+    user_id        BIGINT NULL,
     session_status SMALLINT NULL,
     CONSTRAINT pk_session PRIMARY KEY (id)
 );
 
 CREATE TABLE user
 (
-    id       BINARY(16) NOT NULL,
+    id       BIGINT AUTO_INCREMENT NOT NULL,
     email    VARCHAR(255) NULL,
     password VARCHAR(255) NULL,
     CONSTRAINT pk_user PRIMARY KEY (id)
@@ -90,8 +90,8 @@ CREATE TABLE user
 
 CREATE TABLE user_roles
 (
-    user_id  BINARY(16) NOT NULL,
-    roles_id BINARY(16) NOT NULL,
+    user_id  BIGINT NOT NULL,
+    roles_id BIGINT NOT NULL,
     CONSTRAINT pk_user_roles PRIMARY KEY (user_id, roles_id)
 );
 
