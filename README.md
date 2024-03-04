@@ -30,9 +30,9 @@
   <h3 align="center">Authentication service</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    This service implements basic user service with roles support. The service can be easily integrated with any resource service. Authentication can be done using OAuth2 protocol.
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <!--<a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>-->
     <br />
     <br />
     <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
