@@ -53,7 +53,6 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -89,7 +88,7 @@ Of course, this service cannot be built upfront to cater for all use case, but i
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+Major frameworks/libraries used to bootstrap the project.
 
 * [![SpringBoot][https://spring.io/projects/spring-boot]][Spring-url]
 
@@ -105,40 +104,15 @@ Here is a link to creating a simple application using spring boot: https://sprin
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+Having post man setup helps with testing the end points. Since I have cutomized the Spring Security Framework all hard details are taken care.
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Any resource service can integrate with the auth service easily. High level integration diagram of any resource service is below:
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+[High level resource service integration](https://docs.spring.io/spring-security/reference/_images/servlet/oauth2/bearerauthenticationentrypoint.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
