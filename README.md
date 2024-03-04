@@ -112,7 +112,7 @@ Having post man setup helps with testing the end points. Since I have cutomized 
 
 Any resource service can integrate with the auth service easily. High level integration diagram of any resource service is below:
 
-[High level resource service integration](https://docs.spring.io/spring-security/reference/_images/servlet/oauth2/bearerauthenticationentrypoint.png)
+<img title="High level integration diagram" src="https://docs.spring.io/spring-security/reference/_images/servlet/oauth2/bearerauthenticationentrypoint.png">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
