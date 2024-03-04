@@ -159,7 +159,7 @@ See `LICENSE.txt` for more information.
 
 Abhishek Kumar - abhishek.en@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/SimplifyOrg/AuthService/tree/main)
+Project Link: [https://github.com/SimplifyOrg/AuthService/tree/main](https://github.com/SimplifyOrg/AuthService/tree/main)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
