@@ -15,6 +15,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.security.MacAlgorithm;
 import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.type.descriptor.DateTimeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ public class AuthService {
 
     private SessionRepository sessionRepository;
     private UserRepository userRepository;
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public AuthService(SessionRepository sessionRepository, UserRepository userRepository) {
@@ -70,8 +72,7 @@ public class AuthService {
         session.setUser(user);
         sessionRepository.save(session);
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail(email);
+        UserDTO userDTO = UserDTO.from(user);
 
         MultiValueMapAdapter<String, String> header = new MultiValueMapAdapter<>(new HashMap<>());
         header.add(HttpHeaders.SET_COOKIE, "auth-token:" + jws);
@@ -97,7 +98,7 @@ public class AuthService {
         user.setPassword(bCryptPasswordEncoder.encode(password));
 
         User savedUser = userRepository.save(user);
-        return UserDTO.from(user);
+        return UserDTO.from(savedUser);
     }
 
     public SessionStatus validate(String token, Long userId) {

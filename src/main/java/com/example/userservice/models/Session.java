@@ -1,9 +1,6 @@
 package com.example.userservice.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +10,8 @@ import java.util.Date;
 @Setter
 @Entity
 public class Session extends BaseModel{
+    @Column(length = 2000)
+    @Lob
     private String token;
     private Date expiry;
 

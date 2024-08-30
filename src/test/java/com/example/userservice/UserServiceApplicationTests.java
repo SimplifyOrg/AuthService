@@ -27,12 +27,14 @@ class UserServiceApplicationTests {
     @Commit
     void contextLoads() {
         RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("product-service")
-                .clientSecret(bCryptPasswordEncoder.encode("productservicetest"))
+                .clientId("api-service")
+                .clientSecret(bCryptPasswordEncoder.encode("apiservicetest"))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://127.0.0.1:8081/products/1")
+                .redirectUri("http://192.168.1.9:80/")
+                .redirectUri("https://oauth.pstmn.io/v1/callback")
                 .postLogoutRedirectUri("http://127.0.0.1:8080/")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
