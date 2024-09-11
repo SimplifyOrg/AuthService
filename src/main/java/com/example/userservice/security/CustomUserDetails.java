@@ -36,6 +36,11 @@ public class CustomUserDetails implements UserDetails {
         return customGrantedAuthorities;
     }
 
+    @JsonIgnore
+    public Long getId(){
+        return user.getId();
+    }
+
     @Override
     @JsonIgnore
     public String getPassword() {
