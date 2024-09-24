@@ -25,7 +25,7 @@ class UserServiceApplicationTests {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Test
     @Commit
-    void contextLoads() {
+    void registerApiService() {
         RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("api-service")
                 .clientSecret(bCryptPasswordEncoder.encode("apiservicetest"))
@@ -34,11 +34,31 @@ class UserServiceApplicationTests {
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://192.168.1.9:8080")
-                .redirectUri("http://172.20.10.3:8080")
                 .redirectUri("https://oauth.pstmn.io/v1/callback")
                 .redirectUri("com.example.ui://home")
                 .redirectUri("com.example.ui://books")
                 .postLogoutRedirectUri("http://127.0.0.1:8080/")
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .build();
+
+        registeredClientRepository.save(oidcClient);
+    }
+
+    @Test
+    @Commit
+    void registerFayolClient() {
+        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("fayol-service")
+                .clientSecret(bCryptPasswordEncoder.encode("fayoltest"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://192.168.1.9:8082")
+                .redirectUri("https://oauth.pstmn.io/v1/callback")
+                .postLogoutRedirectUri("http://127.0.0.1:8082/")
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
