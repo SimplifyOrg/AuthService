@@ -9,12 +9,16 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.test.annotation.Commit;
 
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 
+import java.time.Duration;
 import java.util.UUID;
+
+import static java.time.Duration.ofDays;
 
 @SpringBootTest
 class UserServiceApplicationTests {
@@ -33,11 +37,16 @@ class UserServiceApplicationTests {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://192.168.1.9:8080")
+                .redirectUri("http://192.168.1.5:8080")
                 .redirectUri("https://oauth.pstmn.io/v1/callback")
                 .redirectUri("com.example.ui://home")
                 .redirectUri("com.example.ui://books")
                 .postLogoutRedirectUri("http://127.0.0.1:8080/")
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(Duration.ofMinutes(10))  // Set access token lifetime
+                        .refreshTokenTimeToLive(Duration.ofDays(300)) // Set refresh token lifetime
+                        .reuseRefreshTokens(true)  // Allow refresh token reuse
+                        .build())
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
