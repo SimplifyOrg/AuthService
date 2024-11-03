@@ -37,7 +37,7 @@
 //                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 //                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
 //                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .redirectUri("http://192.168.1.103:8080")
+//                .redirectUri("http://192.168.1.8:8080")
 //                .redirectUri("https://oauth.pstmn.io/v1/callback")
 //                .redirectUri("com.example.ui://home")
 //                .redirectUri("com.example.ui://books")
