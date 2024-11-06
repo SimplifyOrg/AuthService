@@ -94,6 +94,7 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers("/auth/signup").permitAll()
                         .requestMatchers("/client/register").permitAll()
+                        .requestMatchers("/auth/reset/password").permitAll()
                         .anyRequest().authenticated()
                 )
                 // Form login handles the redirect to the login page from the

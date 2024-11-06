@@ -1,6 +1,7 @@
 package com.example.userservice.services;
 
 import com.example.userservice.DTOs.UserDTO;
+import com.example.userservice.exceptions.UserNotFound;
 import com.example.userservice.models.Role;
 import com.example.userservice.models.User;
 import com.example.userservice.repository.RoleRepository;
@@ -25,6 +26,10 @@ public class UserService {
     public UserDTO getUser(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.map(UserDTO::from).orElse(null);
+    }
+
+    public Optional<User> getUserByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 
     public UserDTO setUserRoles(Long userID, List<Long> roleIds) {
