@@ -1,6 +1,7 @@
 package com.example.userservice.controller.advices;
 
 import com.example.userservice.DTOs.ExceptionDTO;
+import com.example.userservice.exceptions.ExistingUser;
 import com.example.userservice.exceptions.PasswordMismatch;
 import com.example.userservice.exceptions.SessionNotFound;
 import com.example.userservice.exceptions.UserNotFound;
@@ -37,5 +38,14 @@ public class AuthControllerAdvices {
         exceptionDTO.setErrorMessage(passwordMismatch.getMessage());
 
         return new ResponseEntity<>(exceptionDTO, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ExistingUser.class)
+    public ResponseEntity<ExceptionDTO> handleUserNotFoundException(ExistingUser existingUser) {
+        ExceptionDTO exceptionDTO = new ExceptionDTO();
+        exceptionDTO.setHttpStatus(HttpStatus.BAD_REQUEST);
+        exceptionDTO.setErrorMessage(existingUser.getMessage());
+
+        return new ResponseEntity<>(exceptionDTO, HttpStatus.BAD_REQUEST);
     }
 }

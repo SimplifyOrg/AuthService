@@ -1,6 +1,7 @@
 package com.example.userservice.services;
 
 import com.example.userservice.DTOs.UserDTO;
+import com.example.userservice.exceptions.ExistingUser;
 import com.example.userservice.exceptions.PasswordMismatch;
 import com.example.userservice.exceptions.SessionNotFound;
 import com.example.userservice.exceptions.UserNotFound;
@@ -102,7 +103,13 @@ public class AuthService {
         return ResponseEntity.ok().build();
     }
 
-    public UserDTO signup(String email, String password) {
+    public UserDTO signup(String email, String password) throws ExistingUser {
+
+        Optional<User> oldUser = userRepository.findByEmail(email);
+        if(oldUser.isPresent()){
+            throw new ExistingUser(email);
+        }
+
         User user = new User();
         user.setEmail(email);
         user.setPassword(bCryptPasswordEncoder.encode(password));

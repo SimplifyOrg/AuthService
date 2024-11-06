@@ -2,6 +2,7 @@ package com.example.userservice.controller;
 
 import com.example.userservice.DTOs.*;
 import com.example.userservice.annotations.UserEmail;
+import com.example.userservice.exceptions.ExistingUser;
 import com.example.userservice.exceptions.PasswordMismatch;
 import com.example.userservice.exceptions.SessionNotFound;
 import com.example.userservice.exceptions.UserNotFound;
@@ -36,7 +37,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDTO> signUp(@RequestBody SignupRequestDTO signupRequestDTO) {
+    public ResponseEntity<UserDTO> signUp(@RequestBody SignupRequestDTO signupRequestDTO) throws ExistingUser {
         UserDTO userDTO = authService.signup(signupRequestDTO.getEmail(), signupRequestDTO.getPassword());
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
