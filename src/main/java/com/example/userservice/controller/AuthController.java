@@ -44,15 +44,16 @@ public class AuthController {
 
     @PostMapping("/validate")
     public ResponseEntity<SessionStatus> validateToken(@RequestBody ValidateTokenDTO validateTokenDTO) {
-        SessionStatus sessionStatus = authService.validate(validateTokenDTO.getToken(), validateTokenDTO.getUserId());
+        SessionStatus sessionStatus = authService.validate(validateTokenDTO.getToken());
         return new ResponseEntity<>(sessionStatus, HttpStatus.OK);
     }
 
     @PutMapping("/update/password")
-    public ResponseEntity<String> updatePassword(@UserEmail String email, @RequestBody PasswordUpdateRequestDTO passwordUpdateDTO) {
+    public ResponseEntity<String> updatePassword(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PasswordUpdateRequestDTO passwordUpdateDTO) {
         try {
-            if(!authService.updatePassword(email, passwordUpdateDTO.getOldPassword(), passwordUpdateDTO.getNewPassword())){
-                throw new UserNotFound(email);
+            String token = authorizationHeader.replace("Bearer ", "");
+            if(!authService.updatePassword(token, passwordUpdateDTO.getUser_name(), passwordUpdateDTO.getOldPassword(), passwordUpdateDTO.getNewPassword())){
+                throw new UserNotFound(passwordUpdateDTO.getUser_name());
             }
             return ResponseEntity.ok("Password updated successfully");
         } catch (IllegalArgumentException e) {
@@ -65,9 +66,9 @@ public class AuthController {
     }
 
     @PostMapping("/reset/password")
-    public ResponseEntity<String> resetPassword(@UserEmail String email) {
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequestDTO passwordResetRequestDTO) {
         try {
-            authService.resetPassword(email);
+            authService.resetPassword(passwordResetRequestDTO.getUser_name());
             return ResponseEntity.ok("A new password has been sent to your email address.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());

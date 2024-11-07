@@ -10,6 +10,8 @@ import com.example.userservice.models.SessionStatus;
 import com.example.userservice.models.User;
 import com.example.userservice.repository.SessionRepository;
 import com.example.userservice.repository.UserRepository;
+import com.example.userservice.security.models.Authorization;
+import com.example.userservice.security.repository.AuthorizationRepository;
 import io.jsonwebtoken.security.MacAlgorithm;
 import jakarta.mail.MessagingException;
 import org.apache.commons.lang3.time.DateUtils;
@@ -24,12 +26,14 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.util.MultiValueMapAdapter;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.util.*;
 
 @Service("AuthService")
 public class AuthService {
 
     private final SessionRepository sessionRepository;
+    private final AuthorizationRepository authorizationRepository;
     private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -44,8 +48,9 @@ public class AuthService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes); // Generates a URL-safe base64 string
     }
 
-    public AuthService(SessionRepository sessionRepository, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EmailService emailService) {
+    public AuthService(SessionRepository sessionRepository, AuthorizationRepository authorizationRepository, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EmailService emailService) {
         this.sessionRepository = sessionRepository;
+        this.authorizationRepository = authorizationRepository;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.emailService = emailService;
@@ -118,19 +123,15 @@ public class AuthService {
         return UserDTO.from(savedUser);
     }
 
-    public SessionStatus validate(String token, Long userId) {
-        Optional<Session> sessionOptional = sessionRepository.findByTokenAndUser_Id(token, userId);
-        if(sessionOptional.isEmpty()){
-            return null;
-        }
-
-        Session session = sessionOptional.get();
-        if(!session.getSessionStatus().equals(SessionStatus.ACTIVE)) {
+    public SessionStatus validate(String token) {
+//        Optional<Session> sessionOptional = sessionRepository.findByTokenAndUser_Id(token, userId);
+        Optional<Authorization> authorization = authorizationRepository.findByAccessTokenValue(token);
+        if(authorization.isEmpty()){
             return SessionStatus.ENDED;
         }
 
-        Date currentTime = new Date();
-        if(session.getExpiry().before(currentTime)){
+        Instant now = Instant.now();
+        if(authorization.get().getAccessTokenExpiresAt().isBefore(now)){
             return SessionStatus.ENDED;
         }
 
@@ -145,7 +146,11 @@ public class AuthService {
         return SessionStatus.ACTIVE;
     }
 
-    public boolean updatePassword(String email, String oldPassword, String newPassword) throws UserNotFound {
+    public boolean updatePassword(String token, String email, String oldPassword, String newPassword) throws UserNotFound {
+
+        if(validate(token) != SessionStatus.ACTIVE){
+            return false;
+        }
 
         // Get the authenticated user's ID
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound("User not found")));;

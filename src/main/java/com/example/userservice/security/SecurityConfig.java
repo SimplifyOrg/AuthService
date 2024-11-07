@@ -95,7 +95,14 @@ public class SecurityConfig {
                         .requestMatchers("/auth/signup").permitAll()
                         .requestMatchers("/client/register").permitAll()
                         .requestMatchers("/auth/reset/password").permitAll()
+                        .requestMatchers("/auth/update/password").permitAll()
                         .anyRequest().authenticated()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // Custom endpoint for logout
+                        .logoutSuccessUrl("/login?logout") // Redirect to this URL after logout
+                        .invalidateHttpSession(true) // Invalidate session
+                        .clearAuthentication(true)   // Clear authentication
                 )
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
@@ -165,6 +172,12 @@ public class SecurityConfig {
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
+
+//    @Bean
+//    public JwtDecoder jwtDecoder() {
+//        return NimbusJwtDecoder.withJwkSetUri("your-jwk-set-uri").build();
+//    }
+
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
