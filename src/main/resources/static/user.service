@@ -1,0 +1,15 @@
+[Unit]
+Description=user-service
+After=syslog.target
+
+[Service]
+User=ec2-user
+Environment="AUTH_PORT=8081"
+Environment="AUTH_SERVER_IP_ADDRESS=172.31.4.85"
+ExecStart=java -jar /home/ec2-user/UserService-0.0.1-SNAPSHOT.jar
+SuccessExitStatus=143
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=api.service
