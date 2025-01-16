@@ -5,7 +5,10 @@ After=syslog.target
 [Service]
 User=ec2-user
 Environment="AUTH_PORT=8081"
-Environment="AUTH_SERVER_IP_ADDRESS=172.31.4.85"
+Environment="AUTH_SERVER_IP_ADDRESS=172.31.12.150"
+Environment="DATA_SOURCE_URL=jdbc:mysql://cognitti-db.c90uyw2iucfj.ap-south-1.rds.amazonaws.com:3306/authservice"
+Environment="DATA_SOURCE_USERNAME=admin"
+Environment="DATA_SOURCE_PASSWORD=NewVentures2024"
 ExecStart=java -jar /home/ec2-user/UserService-0.0.1-SNAPSHOT.jar
 SuccessExitStatus=143
 Restart=always

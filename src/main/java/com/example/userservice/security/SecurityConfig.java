@@ -96,6 +96,10 @@ public class SecurityConfig {
                         .requestMatchers("/client/register").permitAll()
                         .requestMatchers("/auth/reset/password").permitAll()
                         .requestMatchers("/auth/update/password").permitAll()
+                        .requestMatchers("/oauth2/token").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/logout").permitAll()
+                        .requestMatchers("/oauth2/authorize").permitAll()
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
