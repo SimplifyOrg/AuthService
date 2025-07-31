@@ -174,7 +174,10 @@
     <div class="forgot-password">
         <a href="#" onclick="toggleResetForm(event)">Forgot Password?</a>
 
-        <form id="reset-form" th:action="@{/users/request/password/reset}" method="post" onsubmit="redirectAfterReset(event)>
+        <div th:if="${resetError}" class="alert alert-danger" th:text="${resetError}"></div>
+        <div th:if="${resetSuccess}" class="alert alert-success" th:text="${resetSuccess}"></div>
+
+        <form id="reset-form" th:action="@{/request/password/reset}" method="post">
             <label for="user_name">Enter your email:</label>
             <input type="email" name="user_name" required placeholder="example@example.com"/>
             <button type="submit">Reset Password</button>
@@ -194,22 +197,6 @@
               document.getElementById("username").value = "";
               document.getElementById("password").value = "";
             }, 100);
-          }
-
-        function redirectAfterReset(event) {
-            event.preventDefault();
-            const form = event.target;
-
-            fetch(form.action, {
-              method: 'POST',
-              body: new FormData(form),
-            }).then(response => {
-              if (response.ok) {
-                window.location.href = '/login';
-              } else {
-                alert('Password reset failed. Please try again.');
-              }
-            });
           }
     </script>
 

@@ -99,7 +99,7 @@ public class SecurityConfig {
                         .requestMatchers("/authenticate/login").permitAll()
                         .requestMatchers("/client/register").permitAll()
                         .requestMatchers("/auth/reset/password").permitAll()
-                        .requestMatchers("/users/request/password/reset").permitAll()
+                        .requestMatchers("/request/password/reset").permitAll()
                         .requestMatchers("/auth/update/password").permitAll()
                         .requestMatchers("/oauth2/token").permitAll()
                         .requestMatchers("/login").permitAll()
