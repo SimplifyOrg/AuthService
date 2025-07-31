@@ -24,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
 import org.springframework.util.MultiValueMapAdapter;
+import org.thymeleaf.context.Context;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
@@ -185,7 +186,9 @@ public class AuthService {
         String emailBody = "<p>Your password has been reset. Your new temporary password is: " + tempPassword +
                 "\nPlease log in and change your password as soon as possible.</p>";
         try {
-            emailService.sendHtmlEmail(user.getEmail(), "Password reset", emailBody);
+            Context context = new Context();
+            context.setVariable("tempPassword", tempPassword);
+            emailService.sendHtmlEmail(user.getEmail(), "Password reset", emailBody, "new-password", context);
         } catch (MessagingException e) {
             e.printStackTrace();
         }

@@ -6,14 +6,17 @@ import com.example.userservice.exceptions.ExistingUser;
 import com.example.userservice.exceptions.PasswordMismatch;
 import com.example.userservice.exceptions.SessionNotFound;
 import com.example.userservice.exceptions.UserNotFound;
+import com.example.userservice.models.PasswordResetToken;
 import com.example.userservice.models.SessionStatus;
 import com.example.userservice.models.User;
+import com.example.userservice.repository.PasswordResetTokenRepository;
 import com.example.userservice.services.AuthService;
 import com.example.userservice.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @RestController
@@ -21,9 +24,11 @@ import java.util.Optional;
 public class AuthController {
 
     private final AuthService authService;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, UserService userService, PasswordResetTokenRepository passwordResetTokenRepository) {
         this.authService = authService;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     @PostMapping("/login")
@@ -65,13 +70,27 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/reset/password")
-    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequestDTO passwordResetRequestDTO) {
-        try {
-            authService.resetPassword(passwordResetRequestDTO.getUser_name());
-            return ResponseEntity.ok("A new password has been sent to your email address.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+//    @PostMapping("/reset/password")
+//    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequestDTO passwordResetRequestDTO) {
+//        try {
+//            authService.resetPassword(passwordResetRequestDTO.getUser_name());
+//            return ResponseEntity.ok("A new password has been sent to your email address.");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+//        }
+//    }
+
+    @GetMapping("/reset/password/{token}")
+    public ResponseEntity<String> handleResetLink(@PathVariable String token) throws UserNotFound {
+        Optional<PasswordResetToken> resetOpt = passwordResetTokenRepository.findByTokenAndUsedFalse(token);
+
+        if (resetOpt.isEmpty() || resetOpt.get().getExpiryDate().isBefore(ZonedDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired reset link.");
         }
+
+        authService.resetPassword(resetOpt.get().getEmail());
+        resetOpt.get().setUsed(true);
+        passwordResetTokenRepository.save(resetOpt.get());
+        return ResponseEntity.ok("A new password has been sent to your email.");
     }
 }

@@ -96,8 +96,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers("/auth/signup").permitAll()
+                        .requestMatchers("/authenticate/login").permitAll()
                         .requestMatchers("/client/register").permitAll()
                         .requestMatchers("/auth/reset/password").permitAll()
+                        .requestMatchers("/users/request/password/reset").permitAll()
                         .requestMatchers("/auth/update/password").permitAll()
                         .requestMatchers("/oauth2/token").permitAll()
                         .requestMatchers("/login").permitAll()
@@ -105,6 +107,7 @@ public class SecurityConfig {
                         .requestMatchers("/oauth2/authorize").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/.well-known/jwks.json").permitAll()
+                        .requestMatchers("/images/**", "/css/**", "/js/**", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
@@ -113,9 +116,14 @@ public class SecurityConfig {
                         .invalidateHttpSession(true) // Invalidate session
                         .clearAuthentication(true)   // Clear authentication
                 )
+                .formLogin(form -> form
+                        .loginPage("/login") // Custom login page
+                        .loginProcessingUrl("/login")
+                        .permitAll()
+                );
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
-                .formLogin(Customizer.withDefaults());
+//                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
