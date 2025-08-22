@@ -17,10 +17,13 @@ import jakarta.mail.MessagingException;
 import org.apache.commons.lang3.time.DateUtils;
 import java.security.SecureRandom;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
 import org.springframework.util.MultiValueMapAdapter;
@@ -97,15 +100,17 @@ public class AuthService {
         return new ResponseEntity<>(userDTO, header, HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> logout(String token, Long userId) throws SessionNotFound {
-        Optional<Session> sessionOptional = sessionRepository.findByTokenAndUser_Id(token, userId);
-        if(sessionOptional.isEmpty()) {
-            throw new SessionNotFound();
-        }
-
-        Session session = sessionOptional.get();
-        session.setSessionStatus(SessionStatus.ENDED);
-        sessionRepository.save(session);
+    public ResponseEntity<Void> logout(String token, String email) throws SessionNotFound, UserNotFound {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound(email));
+        invalidateAuthorizations(user.getEmail(), Optional.ofNullable(token));
+//        Optional<Session> sessionOptional = sessionRepository.findByTokenAndUser_Id(token, userId);
+//        if(sessionOptional.isEmpty()) {
+//            throw new SessionNotFound();
+//        }
+//
+//        Session session = sessionOptional.get();
+//        session.setSessionStatus(SessionStatus.ENDED);
+//        sessionRepository.save(session);
         return ResponseEntity.ok().build();
     }
 
@@ -122,6 +127,16 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
         return UserDTO.from(savedUser);
+    }
+
+    public void invalidateAuthorizations(String username, Optional<String> tokenOpt) {
+
+        if(tokenOpt.isPresent()){
+            authorizationRepository.deleteByPrincipalNameAndRefreshTokenValue(username, tokenOpt.get());
+        }
+        else {
+            authorizationRepository.deleteByPrincipalName(username);
+        }
     }
 
     public SessionStatus validate(String token) {
@@ -174,7 +189,7 @@ public class AuthService {
 
     public void resetPassword(String email) throws UserNotFound {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound(email));
-
+        invalidateAuthorizations(email, Optional.empty());
         // Generate a new temporary password
         String tempPassword = generateRandomPassword();
 

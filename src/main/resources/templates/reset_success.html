@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Password Reset Success</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        :root {
+            --primary-color: #2e86de;
+            --gradient-start: #74ebd5;
+            --gradient-end: #acb6e5;
+            --text-color: #333;
+            --bg-color: #fff;
+            --shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .card {
+            background-color: var(--bg-color);
+            padding: 40px 32px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .card h1 {
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: var(--text-color);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #1b4f72;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 32px 20px;
+            }
+
+            .card h1 {
+                font-size: 20px;
+            }
+
+            .card p {
+                font-size: 15px;
+            }
+
+            .button {
+                width: 100%;
+                font-size: 15px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>Password Reset Successful</h1>
+    <p>A temporary password has been sent to <strong th:text="${email}">your email</strong>. Please check your inbox (and spam folder).</p>
+    <a href="/login" class="button">Return to Login</a>
+</div>
+</body>
+</html>

@@ -9,5 +9,5 @@ import java.util.UUID;
 @Setter
 public class LogoutRequestDTO {
     private String token;
-    private Long userId;
+    private String email;
 }

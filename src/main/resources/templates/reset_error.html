@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Password Reset Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        :root {
+            --primary-color: #e74c3c;          /* red for error */
+            --gradient-start: #ff9a9e;
+            --gradient-end:   #fecfef;
+            --text-color: #333;
+            --bg-color: #fff;
+            --shadow: 0 6px 20px rgba(0,0,0,.15);
+        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+
+        body{
+            font-family:'Segoe UI',sans-serif;
+            background:linear-gradient(to right,var(--gradient-start),var(--gradient-end));
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:16px;
+        }
+
+        .card{
+            width:100%;
+            max-width:420px;
+            background:var(--bg-color);
+            padding:40px 32px;
+            border-radius:16px;
+            box-shadow:var(--shadow);
+            text-align:center;
+        }
+
+        .card h1{
+            color:var(--primary-color);
+            font-size:24px;
+            margin-bottom:16px;
+        }
+
+        .card p{
+            font-size:16px;
+            color:var(--text-color);
+            line-height:1.5;
+            margin-bottom:24px;
+        }
+
+        .button{
+            display:inline-block;
+            padding:12px 24px;
+            font-size:16px;
+            background:var(--primary-color);
+            color:#fff;
+            border-radius:8px;
+            text-decoration:none;
+            transition:background .3s ease;
+        }
+        .button:hover{background:#c0392b;}
+
+        @media(max-width:480px){
+            .card{padding:32px 20px;}
+            .card h1{font-size:20px;}
+            .card p{font-size:15px;}
+            .button{width:100%;font-size:15px;padding:12px;}
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>Link Invalid or Expired</h1>
+    <p th:text="${error ?: 'The password-reset link you used is invalid or has expired. Please request a new link and try again.'}">
+        The password-reset link you used is invalid or has expired. Please request a new link and try again.
+    </p>
+    <a href="/login" class="button">Return to Login</a>
+</div>
+</body>
+</html>

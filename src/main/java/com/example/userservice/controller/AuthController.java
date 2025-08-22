@@ -24,11 +24,9 @@ import java.util.Optional;
 public class AuthController {
 
     private final AuthService authService;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public AuthController(AuthService authService, UserService userService, PasswordResetTokenRepository passwordResetTokenRepository) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     @PostMapping("/login")
@@ -37,8 +35,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestBody LogoutRequestDTO logoutRequestDTO) throws SessionNotFound {
-        return authService.logout(logoutRequestDTO.getToken(), logoutRequestDTO.getUserId());
+    public ResponseEntity<Void> logout(@RequestBody LogoutRequestDTO logoutRequestDTO) throws SessionNotFound, UserNotFound {
+        return authService.logout(logoutRequestDTO.getToken(), logoutRequestDTO.getEmail());
     }
 
     @PostMapping("/signup")
@@ -68,29 +66,5 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating password");
         }
-    }
-
-//    @PostMapping("/reset/password")
-//    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequestDTO passwordResetRequestDTO) {
-//        try {
-//            authService.resetPassword(passwordResetRequestDTO.getUser_name());
-//            return ResponseEntity.ok("A new password has been sent to your email address.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-//        }
-//    }
-
-    @GetMapping("/reset/password/{token}")
-    public ResponseEntity<String> handleResetLink(@PathVariable String token) throws UserNotFound {
-        Optional<PasswordResetToken> resetOpt = passwordResetTokenRepository.findByTokenAndUsedFalse(token);
-
-        if (resetOpt.isEmpty() || resetOpt.get().getExpiryDate().isBefore(ZonedDateTime.now())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired reset link.");
-        }
-
-        authService.resetPassword(resetOpt.get().getEmail());
-        resetOpt.get().setUsed(true);
-        passwordResetTokenRepository.save(resetOpt.get());
-        return ResponseEntity.ok("A new password has been sent to your email.");
     }
 }

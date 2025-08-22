@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
@@ -89,21 +90,21 @@ public class SecurityConfig {
 //                .authorizeHttpRequests((authorize) -> authorize
 //                        .anyRequest().authenticated()
 //                )
-                .requiresChannel(channel ->
-                        channel.anyRequest().requiresSecure()
-                )
+//                .requiresChannel(channel ->
+//                        channel.anyRequest().requiresSecure()
+//                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers("/auth/signup").permitAll()
                         .requestMatchers("/authenticate/login").permitAll()
                         .requestMatchers("/client/register").permitAll()
-                        .requestMatchers("/auth/reset/password").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/reset/password/**").permitAll()
                         .requestMatchers("/request/password/reset").permitAll()
                         .requestMatchers("/auth/update/password").permitAll()
                         .requestMatchers("/oauth2/token").permitAll()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/logout").permitAll()
+                        .requestMatchers("/auth/logout").permitAll()
                         .requestMatchers("/oauth2/authorize").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/.well-known/jwks.json").permitAll()

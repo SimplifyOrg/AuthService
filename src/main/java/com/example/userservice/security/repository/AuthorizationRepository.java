@@ -4,7 +4,9 @@ import java.util.Optional;
 
 
 import com.example.userservice.security.models.Authorization;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -27,4 +29,16 @@ public interface AuthorizationRepository extends JpaRepository<Authorization, St
             " or a.deviceCodeValue = :token"
     )
     Optional<Authorization> findByStateOrAuthorizationCodeValueOrAccessTokenValueOrRefreshTokenValueOrOidcIdTokenValueOrUserCodeValueOrDeviceCodeValue(@Param("token") String token);
+
+    // 1. Delete all tokens for a specific principal
+    @Modifying
+    @Transactional
+    void deleteByPrincipalName(String principalName);
+
+    // 2. Delete specific token for a principal by access token value
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Authorization a WHERE a.principalName = :principalName AND a.refreshTokenValue = :refreshToken")
+    void deleteByPrincipalNameAndRefreshTokenValue(@Param("principalName") String principalName,
+                                                  @Param("refreshToken") String refreshToken);
 }
