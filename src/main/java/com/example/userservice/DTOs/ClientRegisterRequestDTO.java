@@ -13,7 +13,8 @@ public class ClientRegisterRequestDTO {
     private String clientSecret;
     private String redirectURI;
     private String postLogoutRedirectURI;
+    private boolean requireProofKey;
     private Duration accessTokenTTL = Duration.ofMinutes(10);
-    private Duration refreshTokenTTL = Duration.ofDays(300);
+    private Duration refreshTokenTTL = Duration.ofDays(3000);
     private boolean reuseRefreshToken = true;
 }

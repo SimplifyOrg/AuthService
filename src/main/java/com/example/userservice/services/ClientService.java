@@ -26,10 +26,11 @@ public class ClientService {
     }
 
     public void registerClient(ClientRegisterRequestDTO clientRegisterRequestDTO){
+        boolean isPKCE = clientRegisterRequestDTO.isRequireProofKey() && clientRegisterRequestDTO.getClientSecret() == null;
         RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId(clientRegisterRequestDTO.getClientId())
-                .clientSecret(bCryptPasswordEncoder.encode(clientRegisterRequestDTO.getClientSecret()))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .clientSecret(isPKCE ? null : bCryptPasswordEncoder.encode(clientRegisterRequestDTO.getClientSecret()))
+                .clientAuthenticationMethod(isPKCE ? ClientAuthenticationMethod.NONE : ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
@@ -41,7 +42,11 @@ public class ClientService {
                         .build())
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .scope("offline_access")
+                .clientSettings(ClientSettings.builder()
+                        .requireAuthorizationConsent(!isPKCE)
+                        .requireProofKey(isPKCE)
+                        .build())
                 .build();
 
         registeredClientRepository.save(oidcClient);
